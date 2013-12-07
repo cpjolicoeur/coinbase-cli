@@ -10,7 +10,7 @@ sell_rate_api="/prices/sell?api_key="
 account_balance_api="/account/balance?api_key="
 
 if [ -e $api_key_file ]; then
-  echo "Reading config file..."
+  echo "Reading api_key file..."
   source $api_key_file
 else
   echo "The $api_key_file file does not exist"
