@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Read API key from ~/.btc/coinbase_api_key
+
+api_key_file=$HOME/.btc/coinbase_api_key
+spot_rate_api="https://coinbase.com/api/v1/prices/spot_rate?api_key="
+
+if [ -e $api_key_file ]; then
+  echo "Reading config file..."
+  source $api_key_file
+else
+  echo "The $api_key_file file does not exist"
+  exit 1
+fi
+
+curl ${spot_rate_api}${api_key}
+
+exit 0
