@@ -1,5 +1,11 @@
 # Coinbase CLI Tool
 
+## Dependencies
+
+[jq](http://stedolan.github.io/jq/)
+
+    brew install jq
+
 ## Configuration
 
 Create a config file with your coinbase api key named the following
@@ -12,4 +18,6 @@ The file should follow the format
 
 ### Available Commands
 
-    btc # Retrieve the current spot-rate price
+    btc       # Retrieve the current spot-rate price
+    btc buy   # Retrieve the current buy price
+    btc sell  # Retrieve the current sell price

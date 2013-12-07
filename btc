@@ -4,20 +4,8 @@
 
 api_key_file=$HOME/.btc/coinbase_api_key
 spot_rate_api="https://coinbase.com/api/v1/prices/spot_rate?api_key="
-
-function jsonElement(){
-        #echo $1
-        out=$(echo $2 | awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/'$1'\042/){print $(i+1)} } }')
-        if [[ $out == \"*\" ]]; #test if the string starts and ends in a quote
-        then
-            echo "${out:1:${#out}-2}" #removes first and last quotes
-        elif [[  $out == \"*\"} ]];
-        then
-            echo "${out:1:${#out}-3}" #removes first and last quotes plus the curly brace
-        else
-            echo $out
-        fi
-}
+buy_rate_api="https://coinbase.com/api/v1/prices/buy?api_key="
+sell_rate_api="https://coinbase.com/api/v1/prices/sell?api_key="
 
 if [ -e $api_key_file ]; then
   echo "Reading config file..."
@@ -27,10 +15,25 @@ else
   exit 1
 fi
 
-json=`curl -s -X GET ${spot_rate_api}${api_key}`
-spot_rate=$(jsonElement "amount" $json)
-currency=$(jsonElement "currency" $json)
-
-echo "$spot_rate $currency"
+case "$1" in
+  'buy')
+    json=`curl -s -X GET ${buy_rate_api}${api_key}`
+    buy_rate=`echo $json | jq .amount | tr -d '"'`
+    currency=`echo $json | jq .currency | tr -d '"'`
+    echo "$buy_rate $currency"
+    ;;
+  'sell')
+    json=`curl -s -X GET ${sell_rate_api}${api_key}`
+    sell_rate=`echo $json | jq .amount | tr -d '"'`
+    currency=`echo $json | jq .currency | tr -d '"'`
+    echo "$sell_rate $currency"
+    ;;
+  *)
+    json=`curl -s -X GET ${spot_rate_api}${api_key}`
+    spot_rate=`echo $json | jq .amount | tr -d '"'`
+    currency=`echo $json | jq .currency | tr -d '"'`
+    echo "$spot_rate $currency"
+    ;;
+esac
 
 exit 0
