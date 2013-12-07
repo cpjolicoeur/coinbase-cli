@@ -5,6 +5,20 @@
 api_key_file=$HOME/.btc/coinbase_api_key
 spot_rate_api="https://coinbase.com/api/v1/prices/spot_rate?api_key="
 
+function jsonElement(){
+        #echo $1
+        out=$(echo $2 | awk -F"[,:]" '{for(i=1;i<=NF;i++){if($i~/'$1'\042/){print $(i+1)} } }')
+        if [[ $out == \"*\" ]]; #test if the string starts and ends in a quote
+        then
+            echo "${out:1:${#out}-2}" #removes first and last quotes
+        elif [[  $out == \"*\"} ]];
+        then
+            echo "${out:1:${#out}-3}" #removes first and last quotes plus the curly brace
+        else
+            echo $out
+        fi
+}
+
 if [ -e $api_key_file ]; then
   echo "Reading config file..."
   source $api_key_file
@@ -13,6 +27,10 @@ else
   exit 1
 fi
 
-curl ${spot_rate_api}${api_key}
+json=`curl -s -X GET ${spot_rate_api}${api_key}`
+spot_rate=$(jsonElement "amount" $json)
+currency=$(jsonElement "currency" $json)
+
+echo "$spot_rate $currency"
 
 exit 0
