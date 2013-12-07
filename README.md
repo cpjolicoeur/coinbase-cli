@@ -18,6 +18,7 @@ The file should follow the format
 
 ### Available Commands
 
-    btc       # Retrieve the current spot-rate price
-    btc buy   # Retrieve the current buy price
-    btc sell  # Retrieve the current sell price
+    btc           # Retrieve the current spot-rate price
+    btc buy       # Retrieve the current buy price
+    btc sell      # Retrieve the current sell price
+    btc balance   # Retrieve current coinbase account balance

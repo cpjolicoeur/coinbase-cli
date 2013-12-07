@@ -3,9 +3,11 @@
 # Read API key from ~/.btc/coinbase_api_key
 
 api_key_file=$HOME/.btc/coinbase_api_key
-spot_rate_api="https://coinbase.com/api/v1/prices/spot_rate?api_key="
-buy_rate_api="https://coinbase.com/api/v1/prices/buy?api_key="
-sell_rate_api="https://coinbase.com/api/v1/prices/sell?api_key="
+coinbase_api="https://coinbase.com/api/v1"
+spot_rate_api="/prices/spot_rate?api_key="
+buy_rate_api="/prices/buy?api_key="
+sell_rate_api="/prices/sell?api_key="
+account_balance_api="/account/balance?api_key="
 
 if [ -e $api_key_file ]; then
   echo "Reading config file..."
@@ -17,19 +19,25 @@ fi
 
 case "$1" in
   'buy')
-    json=`curl -s -X GET ${buy_rate_api}${api_key}`
+    json=`curl -s -X GET ${coinbase_api}${buy_rate_api}${api_key}`
     buy_rate=`echo $json | jq .amount | tr -d '"'`
     currency=`echo $json | jq .currency | tr -d '"'`
     echo "$buy_rate $currency"
     ;;
   'sell')
-    json=`curl -s -X GET ${sell_rate_api}${api_key}`
+    json=`curl -s -X GET ${coinbase_api}${sell_rate_api}${api_key}`
     sell_rate=`echo $json | jq .amount | tr -d '"'`
     currency=`echo $json | jq .currency | tr -d '"'`
     echo "$sell_rate $currency"
     ;;
+  'balance')
+    json=`curl -s -X GET ${coinbase_api}${account_balance_api}${api_key}`
+    balance=`echo $json | jq .amount | tr -d '"'`
+    currency=`echo $json | jq .currency | tr -d '"'`
+    echo "$balance $currency"
+    ;;
   *)
-    json=`curl -s -X GET ${spot_rate_api}${api_key}`
+    json=`curl -s -X GET ${coinbase_api}${spot_rate_api}${api_key}`
     spot_rate=`echo $json | jq .amount | tr -d '"'`
     currency=`echo $json | jq .currency | tr -d '"'`
     echo "$spot_rate $currency"
